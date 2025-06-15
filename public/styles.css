@@ -1,0 +1,105 @@
+body {
+    background: #e0f7fa;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+#game-container {
+    background: #fffde7;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    padding: 24px;
+    text-align: center;
+    width: 95vw;
+    max-width: 500px;
+}
+
+#title {
+    margin-bottom: 4px;
+}
+
+#mission {
+    font-size: 1em;
+    margin-bottom: 10px;
+    color: #00796b;
+}
+
+#score-timer-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 1.1em;
+}
+
+#score, #timer {
+    font-weight: bold;
+}
+
+#feedback {
+    font-size: 1.1em;
+    margin-bottom: 6px;
+    min-height: 1.2em;
+}
+
+#game-canvas {
+    background: #b3e5fc;
+    border-radius: 12px;
+    margin: 12px 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 480px;
+    height: 320px;
+    max-height: 480px;
+    touch-action: none;
+}
+
+#start-btn, #restart-btn {
+    background: #00bcd4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#final-score {
+    font-size: 1.3em;
+    margin: 10px 0;
+    color: #00796b;
+}
+
+#prev-score {
+    font-size: 0.95em;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+#charity-info {
+    margin-top: 10px;
+    font-size: 0.95em;
+}
+
+#charity-info a {
+    color: #00bcd4;
+    text-decoration: none;
+}
+
+@media (min-width: 700px) {
+    #game-container {
+        max-width: 700px;
+    }
+    #game-canvas {
+        max-width: 600px;
+        height: 400px;
+        max-height: 500px;
+    }
+}

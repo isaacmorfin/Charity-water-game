@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Water Drop Collector - Charity: Water Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div id="game-container">
+        <h1 id="title"></h1>
+        <div id="mission"></div>
+        <div id="score-timer-row">
+            <span id="score"></span>
+            <span id="timer"></span>
+        </div>
+        <div id="feedback"></div>
+        <canvas id="game-canvas"></canvas>
+        <button id="start-btn"></button>
+        <div id="final-score" style="display:none;"></div>
+        <button id="restart-btn" style="display:none;"></button>
+        <div id="prev-score"></div>
+        <div id="charity-info">
+            <a href="https://www.charitywater.org/" target="_blank">Learn more & donate at charity: water</a>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
