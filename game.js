@@ -252,6 +252,7 @@ function endGame() {
     localStorage.setItem('waterGamePrevScore', score);
     prevScore = score;
     document.getElementById('prev-score').textContent = t.prev + prevScore;
+    launchConfetti(); // <-- Add this line to trigger confetti
 }
 function startGame() {
     drops = [];
@@ -281,6 +282,69 @@ document.getElementById('start-btn').onclick = startGame;
 document.getElementById('restart-btn').onclick = function() {
     startGame();
 };
+
+// --- Confetti Effect ---
+function launchConfetti() {
+    const confettiCanvas = document.createElement('canvas');
+    confettiCanvas.id = 'confetti-canvas';
+    confettiCanvas.style.position = 'absolute';
+    confettiCanvas.style.left = canvas.offsetLeft + 'px';
+    confettiCanvas.style.top = canvas.offsetTop + 'px';
+    confettiCanvas.width = canvas.width;
+    confettiCanvas.height = canvas.height;
+    confettiCanvas.style.pointerEvents = 'none';
+    confettiCanvas.style.zIndex = 10;
+    document.getElementById('game-container').appendChild(confettiCanvas);
+
+    const ctx2 = confettiCanvas.getContext('2d');
+    const confettiCount = 80;
+    const confetti = [];
+    const colors = ['#00bcd4', '#ffeb3b', '#1976d2', '#fff176', '#b3e5fc', '#fbc02d'];
+
+    for (let i = 0; i < confettiCount; i++) {
+        confetti.push({
+            x: Math.random() * confettiCanvas.width,
+            y: Math.random() * -confettiCanvas.height,
+            r: Math.random() * 6 + 4,
+            d: Math.random() * confettiCanvas.height,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            tilt: Math.random() * 10 - 10,
+            tiltAngleIncremental: Math.random() * 0.07 + 0.05,
+            tiltAngle: 0
+        });
+    }
+
+    let angle = 0;
+    let confettiAnimation;
+
+    function drawConfetti() {
+        ctx2.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        angle += 0.01;
+        for (let i = 0; i < confettiCount; i++) {
+            let c = confetti[i];
+            c.tiltAngle += c.tiltAngleIncremental;
+            c.y += (Math.cos(angle + c.d) + 1 + c.r / 2) * 0.9;
+            c.x += Math.sin(angle);
+            c.tilt = Math.sin(c.tiltAngle - (i % 3)) * 15;
+
+            ctx2.beginPath();
+            ctx2.lineWidth = c.r;
+            ctx2.strokeStyle = c.color;
+            ctx2.moveTo(c.x + c.tilt + c.r / 3, c.y);
+            ctx2.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 5);
+            ctx2.stroke();
+        }
+        confettiAnimation = requestAnimationFrame(drawConfetti);
+    }
+
+    drawConfetti();
+
+    // Remove confetti after 3 seconds
+    setTimeout(() => {
+        cancelAnimationFrame(confettiAnimation);
+        confettiCanvas.remove();
+    }, 3000);
+}
 
 // --- On Load ---
 showStartScreen();
