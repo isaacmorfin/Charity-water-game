@@ -13,8 +13,12 @@ const translations = {
         start: "Start Game",
         restart: "Play Again",
         final: "Final Score: ",
-        prev: "Previous Score: "
-    },
+        prev: "Previous Score: ",
+        Dificulty: "Difficulty: ",
+        easy: "Easy",
+        medium: "Medium",
+        hard: "Hard",
+    }
 
 };
 const userLang = navigator.language.startsWith('ar') ? 'ar' : 'en';
@@ -63,6 +67,15 @@ let feedbackTimeout;
 let timer = 30;
 let timerInterval;
 let gameStarted = false;
+
+// Milestones for extra feedback
+const milestones = [
+    { score: 5, message: "Nice start! 5 drops collected!" },
+    { score: 10, message: "Halfway there! 10 points!" },
+    { score: 15, message: "Great job! 15 points!" },
+    { score: 20, message: "Amazing! 20 points!" }
+];
+let nextMilestoneIdx = 0;
 
 // --- Responsive Canvas ---
 function resizeCanvas() {
@@ -153,9 +166,20 @@ function update() {
             if (d.isPollutant) {
                 score = Math.max(0, score - 2);
                 showFeedback(t.bad);
+                playSound('snd-miss');
             } else {
                 score += 1;
                 showFeedback(t.good);
+                playSound('snd-collect');
+                // Check milestone
+                if (
+                    nextMilestoneIdx < milestones.length &&
+                    score >= milestones[nextMilestoneIdx].score
+                ) {
+                    showFeedback(milestones[nextMilestoneIdx].message);
+                    playSound('snd-milestone');
+                    nextMilestoneIdx++;
+                }
             }
             drops.splice(i, 1);
             continue;
@@ -166,6 +190,7 @@ function update() {
             if (!d.isPollutant) {
                 score = Math.max(0, score - 1); // Penalty for missing water
                 showFeedback(t.miss);
+                playSound('snd-miss');
             }
             drops.splice(i, 1);
         }
@@ -252,7 +277,8 @@ function endGame() {
     localStorage.setItem('waterGamePrevScore', score);
     prevScore = score;
     document.getElementById('prev-score').textContent = t.prev + prevScore;
-    launchConfetti(); // <-- Add this line to trigger confetti
+    launchConfetti();
+    playSound('snd-win');
 }
 function startGame() {
     drops = [];
@@ -266,6 +292,7 @@ function startGame() {
     document.getElementById('restart-btn').style.display = 'none';
     document.getElementById('start-btn').style.display = 'none';
     document.getElementById('prev-score').textContent = t.prev + prevScore;
+    nextMilestoneIdx = 0; // <-- Reset milestone tracker
     startTimer();
     spawnIntervalId = setInterval(() => {
         if (!gameOver) spawnDrop();
@@ -278,8 +305,12 @@ function showStartScreen() {
     document.getElementById('final-score').style.display = 'none';
     document.getElementById('prev-score').textContent = t.prev + prevScore;
 }
-document.getElementById('start-btn').onclick = startGame;
+document.getElementById('start-btn').onclick = function() {
+    playSound('snd-button');
+    startGame();
+};
 document.getElementById('restart-btn').onclick = function() {
+    playSound('snd-button');
     startGame();
 };
 
@@ -344,6 +375,15 @@ function launchConfetti() {
         cancelAnimationFrame(confettiAnimation);
         confettiCanvas.remove();
     }, 3000);
+}
+
+// --- Sound Effects ---
+function playSound(id) {
+    const snd = document.getElementById(id);
+    if (snd) {
+        snd.currentTime = 0;
+        snd.play();
+    }
 }
 
 // --- On Load ---
